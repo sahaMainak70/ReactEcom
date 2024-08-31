@@ -6,13 +6,16 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 import GuestLayout from "../Layouts/GuestLayout";
 import "../App.css";
 import { addToCart } from "../store/cartSlice.js";
+import { addToWishlist, removeFromWishlist } from "../store/wishlistSlice.js";
 
 const ImageLoader = lazy(() => import("../components/ImageLoader.jsx"));
 
 function Home() {
   const dispatch = useDispatch();
   const cartSelector = useSelector((state) => state.cart);
-  console.log(cartSelector);
+  const wishlistSelector = useSelector((state) => state.wishlist);
+
+  // console.log(cartSelector);
 
   const [products, setProducts] = useState([]);
   const [Loading, setLoading] = useState(false);
@@ -126,6 +129,24 @@ function Home() {
     dispatch(addToCart(item));
   }
 
+  function wishlistHandler(item) {
+    console.log(wishlistSelector);
+
+    let isAvailableOnWishlist = false;
+    wishlistSelector.map((wishlistItem) => {
+      if (wishlistItem.id == item.id) {
+        isAvailableOnWishlist = true;
+      }
+    });
+    
+
+    if (isAvailableOnWishlist) {
+      dispatch(removeFromWishlist(item));
+    } else {
+      dispatch(addToWishlist(item));
+    }
+  }
+
   return (
     <GuestLayout>
       <div className="container py-5">
@@ -159,13 +180,34 @@ function Home() {
                     <p className="card-text">
                       Rating: {setRiviewsHandlers(item.rating)}
                     </p>
-                    <button className="btn btn-primary me-1">View</button>
-                    <button
-                      className="btn btn-info"
-                      onClick={() => addToCartHandler(item)}
-                    >
-                      Add to Cart
-                    </button>
+                    <div className="d-flex justify-content-between ">
+                      <div>
+                        <button className="btn btn-primary me-1">View</button>
+                        <button
+                          className="btn btn-info"
+                          onClick={() => addToCartHandler(item)}
+                        >
+                          Add to Cart
+                        </button>
+                      </div>
+                      <div className="d-flex justify-content-center align-items-center">
+                        <button
+                          className="btn-wishlist"
+                          onClick={() => wishlistHandler(item)}
+                          style={{
+                            color: `${
+                              wishlistSelector.filter(
+                                (wishlistItem) => wishlistItem.id == item.id
+                              ).length > 0
+                                ? "red"
+                                : "black"
+                            }`,
+                          }}
+                        >
+                          <i className="fa-solid fa-heart"></i>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

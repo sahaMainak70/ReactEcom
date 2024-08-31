@@ -3,6 +3,7 @@ import "./App.css";
 import React from "react";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
+import Wishlist from "./pages/Wishlist";
 
 const App = () => {
   return (
@@ -10,6 +11,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/wishlist" element={<Wishlist />} />
       </Routes>
     </BrowserRouter>
   );
